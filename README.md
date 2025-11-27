@@ -1,189 +1,86 @@
-# Full-Stack Assessment — NestJS + Next.js Project
+# Full-Stack Assessment — NestJS + Next.js + React + TypeScript
 
-This repository contains a full-stack assessment built with **NestJS (Backend)** and **Next.js (Frontend)**.  
-The goal is to evaluate practical skills across REST API development, React component architecture, Tailwind styling, debugging, request handling, search/pagination logic, and UI/UX enhancements.
-
-The assessment includes **10 tasks** with increasing complexity.
+This assessment contains backend, frontend, and UI tasks covering **NestJS**, **Next.js**, **React**, **Material‑UI**, and **TypeScript**.
 
 ---
 
 # Tasks Overview
 
-## 1. Backend — Add Pagination to GET /posts (Easy)
+## 1. Backend — Pagination for GET /posts
+Implement pagination using query parameters.
 
-Enhance the existing posts endpoint with pagination.
+## 2. Frontend — PostForm Component
+Create a reusable component for submitting new posts.
 
-### Requirements
-- Accept `page` (default: 1) and `limit` (default: 10)
-- Validate that both are positive integers
-- Return:
-  ```
-  {
-    data: Post[];
-    total: number;
-    page: number;
-    limit: number;
-  }
-  ```
-- Implement pagination logic in the service
+## 3. Frontend — Post Creation API Integration
+Integrate the form and send new posts to the backend.
 
-### Files to Update
-- backend/src/posts/posts.controller.ts
-- backend/src/posts/posts.service.ts
+## 4. Backend — Search for GET /posts
+Add search capabilities to the posts endpoint.
 
----
+## 5. Frontend — PostsList Component
+Build a component to fetch and display posts with proper UI states.
 
-## 2. Frontend — Create PostForm Component (Easy)
+## 6. Backend — Update Post (PATCH /posts/:id)
+Add a partial update endpoint for posts.
 
-Build a reusable form to create new posts.
+## 7. Frontend — Client-Side Search Filter
+Implement client-side filtering for posts.
 
-### Requirements
-- Create PostForm.tsx under /frontend/app/components/
-- Fields: title (text), content (textarea)
-- Tailwind CSS styling
-- Basic validation
-- Emit form data:
-  ```
-  onSubmit({ title, content })
-  ```
+## 8. Full-Stack — Debugging: Posts Not Displaying
+Identify and resolve an issue preventing posts from displaying.
 
-### File to Create
-- frontend/app/components/PostForm.tsx
+## 9. Backend — Request Logging Interceptor
+Create a global logging interceptor.
+
+## 10. Frontend — Dark Mode Toggle
+Implement a toggle for dark mode with persistence.
 
 ---
 
-## 3. Frontend — Implement Post Creation API Call (Easy)
+# React + TypeScript: Text + Image Uploader
 
-Integrate PostForm into the main page and POST to backend.
-
-### Requirements
-- Import PostForm in page.tsx
-- POST to /posts
-- Show success/error messages
-- Optional: refresh posts after creation
-
-### File to Modify
-- frontend/app/page.tsx
+## Overview
+Build an interface allowing users to:
+- Enter text.
+- Upload images via drag-drop or file picker.
+- Preview and remove attachments.
+- Send messages to a scrollable list.
+- Select items for deletion or export.
+- Keep the input bar always visible.
 
 ---
 
-## 4. Backend — Add Search Functionality to GET /posts (Medium)
+## Functional Requirements
 
-Add backend-level filtering using a `search` query parameter.
+### 1. Text + Drag-Drop
+- Text input accepts user text.
+- Dragging images over the input area should trigger a warning state.
+- Dropping files elsewhere in the app has no effect.
 
-### Requirements
-- Add optional search param
-- Search case-insensitive in title and content
-- Combine search with pagination
-- Return empty array if no matches
+### 2. Attachment Button
+- A button opens the image-only file picker.
+- Selected files appear as deletable thumbnails.
 
-### Files to Modify
-- backend/src/posts/posts.controller.ts
-- backend/src/posts/posts.service.ts
+### 3. Send
+- Disabled unless there is text or attachments.
+- Sending adds an item to the list and resets inputs.
 
----
+### 4. Sent Items
+- Display text and image previews.
+- Items can be individually selected.
+- Per-item actions: delete, export as JSON.
+- Bulk actions: delete selected, export selected.
 
-## 5. Frontend — Create PostsList Component (Medium)
-
-Display posts in a styled list with loading and error states.
-
-### Requirements
-- Create PostsList.tsx
-- Fetch posts from GET /posts on mount
-- Loading and error states
-- Tailwind card layout
-
-### File to Create
-- frontend/app/components/PostsList.tsx
-
-### File to Modify
-- frontend/app/page.tsx
+### 5. Layout & Styling
+- Use MUI components and theme.
+- Responsive design.
 
 ---
 
-## 6. Backend — Implement PATCH /posts/:id (Medium)
-
-Add an endpoint for partial updates.
-
-### Requirements
-- Create PATCH /posts/:id
-- Allow updating title/content
-- Return 404 if missing
-- Return updated post
-- Use DTO validation
-
-### Files to Modify/Create
-- backend/src/posts/posts.controller.ts
-- backend/src/posts/posts.service.ts
-- backend/src/posts/dto/update-post.dto.ts
-
----
-
-## 7. Frontend — Client-Side Search Filter (Medium)
-
-Add a search bar to filter posts in real time.
-
-### Requirements
-- Search input above posts list
-- Filter client-side
-- Optional debounce
-- “No posts found” handling
-
-### Files to Modify
-- frontend/app/components/PostsList.tsx
-or
-- frontend/app/page.tsx
-
----
-
-## 8. Full-Stack — Debug: Posts Not Displaying
-
-One intentional bug exists.
-
-### Possible Issues
-- CORS configuration
-- Wrong API URL
-- Missing error handling
-- Response shape mismatch
-
-### Requirements
-- Identify the issue
-- Fix it
-- Comment explanation
-- Verify frontend displays posts
-
----
-
-## 9. Backend — Global Logging Interceptor (Medium)
-
-Log all incoming requests.
-
-### Requirements
-- Create interceptor:
-  - backend/src/common/interceptors/logging.interceptor.ts
-- Log:
-  ```
-  [TIMESTAMP] METHOD URL – STATUS_CODE – RESPONSE_TIME ms
-  ```
-- Register globally
-
-### Files
-- interceptor file
-- main.ts or app.module.ts
-
----
-
-## 10. Frontend — Dark Mode Toggle (Medium)
-
-Add theme switching with persistence.
-
-### Requirements
-- Toggle button (layout.tsx)
-- Tailwind dark mode
-- Save preference in localStorage
-- Apply class to html/body
-
-### Files to Modify
-- frontend/app/layout.tsx
-- frontend/app/globals.css
-- frontend/tailwind.config.js
+## Technical Specs
+- **React** 18+
+- **TypeScript**
+- **Material‑UI**
+- **State Management:** React hooks
+- **File Handling:** URL.createObjectURL / revokeObjectURL
