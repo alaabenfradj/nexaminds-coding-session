@@ -213,28 +213,71 @@ export default function TextImageUploader() {
   const hasSelection = selectedItems.size > 0;
 
   return (
-    <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column', backgroundColor: 'background.default' }}>
       {/* Header with bulk actions */}
-      <AppBar position="static" color="default" elevation={1}>
-        <Toolbar>
-          <Typography variant="h6" sx={{ flexGrow: 1 }}>
+      <AppBar 
+        position="static" 
+        elevation={2}
+        sx={{
+          background: (theme) => 
+            theme.palette.mode === 'dark' 
+              ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+              : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        }}
+      >
+        <Toolbar sx={{ py: 1 }}>
+          <ImageIcon sx={{ mr: 2, fontSize: 28 }} />
+          <Typography variant="h5" sx={{ flexGrow: 1, fontWeight: 600, letterSpacing: 0.5 }}>
             Text + Image Uploader
           </Typography>
           {hasSelection && (
-            <Stack direction="row" spacing={1}>
+            <Stack 
+              direction="row" 
+              spacing={1}
+              sx={{
+                animation: 'fadeIn 0.3s ease-in',
+                '@keyframes fadeIn': {
+                  from: { opacity: 0, transform: 'translateY(-10px)' },
+                  to: { opacity: 1, transform: 'translateY(0)' },
+                },
+              }}
+            >
               <Button
+                variant="contained"
                 color="error"
                 startIcon={<Delete />}
                 onClick={handleDeleteSelected}
                 size="small"
+                sx={{
+                  borderRadius: 2,
+                  textTransform: 'none',
+                  fontWeight: 600,
+                  boxShadow: 2,
+                  '&:hover': {
+                    boxShadow: 4,
+                    transform: 'translateY(-2px)',
+                    transition: 'all 0.2s ease-in-out',
+                  },
+                }}
               >
-                Delete Selected ({selectedItems.size})
+                Delete ({selectedItems.size})
               </Button>
               <Button
-                color="primary"
+                variant="contained"
                 startIcon={<Download />}
                 onClick={handleExportSelected}
                 size="small"
+                sx={{
+                  borderRadius: 2,
+                  textTransform: 'none',
+                  fontWeight: 600,
+                  boxShadow: 2,
+                  '&:hover': {
+                    boxShadow: 4,
+                    transform: 'translateY(-2px)',
+                    transition: 'all 0.2s ease-in-out',
+                  },
+                }}
               >
                 Export Selected
               </Button>
@@ -248,25 +291,99 @@ export default function TextImageUploader() {
         sx={{
           flex: 1,
           overflow: 'auto',
-          p: 2,
+          p: { xs: 2, sm: 3, md: 4 },
           backgroundColor: 'background.default',
+          '&::-webkit-scrollbar': {
+            width: '8px',
+          },
+          '&::-webkit-scrollbar-track': {
+            backgroundColor: 'transparent',
+          },
+          '&::-webkit-scrollbar-thumb': {
+            backgroundColor: 'rgba(0,0,0,0.2)',
+            borderRadius: '4px',
+            '&:hover': {
+              backgroundColor: 'rgba(0,0,0,0.3)',
+            },
+          },
         }}
       >
         {sentItems.length === 0 ? (
-          <Alert severity="info">No items sent yet. Create your first message below!</Alert>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              minHeight: '60vh',
+              textAlign: 'center',
+              px: 2,
+            }}
+          >
+            <ImageIcon sx={{ fontSize: 80, color: 'text.secondary', mb: 2, opacity: 0.5 }} />
+            <Typography variant="h5" color="text.secondary" sx={{ mb: 1, fontWeight: 500 }}>
+              No messages yet
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ maxWidth: 400 }}>
+              Start by typing a message or uploading images below. Your messages will appear here!
+            </Typography>
+          </Box>
         ) : (
-          <List>
-            {sentItems.map((item) => (
-              <Card key={item.id} sx={{ mb: 2 }}>
-                <CardContent>
-                  <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
+          <Box sx={{ maxWidth: 900, mx: 'auto' }}>
+            {sentItems.map((item, index) => (
+              <Card 
+                key={item.id} 
+                sx={{ 
+                  mb: 2.5,
+                  borderRadius: 3,
+                  overflow: 'hidden',
+                  transition: 'all 0.3s ease-in-out',
+                  border: selectedItems.has(item.id) ? '2px solid' : '1px solid',
+                  borderColor: selectedItems.has(item.id) ? 'primary.main' : 'divider',
+                  boxShadow: selectedItems.has(item.id) 
+                    ? '0 8px 16px rgba(102, 126, 234, 0.3)' 
+                    : '0 2px 8px rgba(0,0,0,0.1)',
+                  '&:hover': {
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                    transform: 'translateY(-2px)',
+                  },
+                  animation: 'slideIn 0.4s ease-out',
+                  animationDelay: `${index * 0.05}s`,
+                  '@keyframes slideIn': {
+                    from: {
+                      opacity: 0,
+                      transform: 'translateY(20px)',
+                    },
+                    to: {
+                      opacity: 1,
+                      transform: 'translateY(0)',
+                    },
+                  },
+                }}
+              >
+                <CardContent sx={{ p: 3 }}>
+                  <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2 }}>
                     <Checkbox
                       checked={selectedItems.has(item.id)}
                       onChange={() => handleToggleSelect(item.id)}
+                      sx={{
+                        mt: -1,
+                        '& .MuiSvgIcon-root': {
+                          fontSize: 28,
+                        },
+                      }}
                     />
-                    <Box sx={{ flex: 1 }}>
+                    <Box sx={{ flex: 1, minWidth: 0 }}>
                       {item.text && (
-                        <Typography variant="body1" sx={{ mb: 2 }}>
+                        <Typography 
+                          variant="body1" 
+                          sx={{ 
+                            mb: 2,
+                            lineHeight: 1.6,
+                            wordBreak: 'break-word',
+                            color: 'text.primary',
+                          }}
+                        >
                           {item.text}
                         </Typography>
                       )}
@@ -275,7 +392,7 @@ export default function TextImageUploader() {
                           sx={{
                             display: 'flex',
                             flexWrap: 'wrap',
-                            gap: 1,
+                            gap: 1.5,
                             mb: 2,
                           }}
                         >
@@ -284,40 +401,88 @@ export default function TextImageUploader() {
                               key={idx}
                               sx={{
                                 position: 'relative',
-                                width: 100,
-                                height: 100,
-                                borderRadius: 1,
+                                width: { xs: 80, sm: 120 },
+                                height: { xs: 80, sm: 120 },
+                                borderRadius: 2,
                                 overflow: 'hidden',
-                                border: '1px solid',
+                                border: '2px solid',
                                 borderColor: 'divider',
+                                cursor: 'pointer',
+                                transition: 'all 0.2s ease-in-out',
+                                '&:hover': {
+                                  transform: 'scale(1.05)',
+                                  borderColor: 'primary.main',
+                                  boxShadow: 4,
+                                },
                               }}
                             >
                               <CardMedia
                                 component="img"
                                 image={img.preview}
                                 alt={`Preview ${idx + 1}`}
-                                sx={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                sx={{ 
+                                  width: '100%', 
+                                  height: '100%', 
+                                  objectFit: 'cover',
+                                }}
                               />
                             </Box>
                           ))}
                         </Box>
                       )}
-                      <Typography variant="caption" color="text.secondary">
-                        {item.timestamp.toLocaleString()}
-                      </Typography>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 1.5 }}>
+                        <Chip
+                          label={item.timestamp.toLocaleString()}
+                          size="small"
+                          variant="outlined"
+                          sx={{
+                            fontSize: '0.75rem',
+                            height: 24,
+                          }}
+                        />
+                        {item.images.length > 0 && (
+                          <Chip
+                            icon={<ImageIcon sx={{ fontSize: 16 }} />}
+                            label={`${item.images.length} image${item.images.length > 1 ? 's' : ''}`}
+                            size="small"
+                            color="primary"
+                            variant="outlined"
+                            sx={{
+                              fontSize: '0.75rem',
+                              height: 24,
+                            }}
+                          />
+                        )}
+                      </Box>
                     </Box>
-                    <Stack direction="row" spacing={1}>
+                    <Stack direction="row" spacing={0.5}>
                       <IconButton
                         size="small"
                         onClick={() => handleExportItem(item)}
-                        color="primary"
+                        sx={{
+                          color: 'primary.main',
+                          '&:hover': {
+                            backgroundColor: 'primary.light',
+                            color: 'primary.dark',
+                            transform: 'scale(1.1)',
+                          },
+                          transition: 'all 0.2s ease-in-out',
+                        }}
                       >
                         <Download />
                       </IconButton>
                       <IconButton
                         size="small"
                         onClick={() => handleDeleteItem(item.id)}
-                        color="error"
+                        sx={{
+                          color: 'error.main',
+                          '&:hover': {
+                            backgroundColor: 'error.light',
+                            color: 'error.dark',
+                            transform: 'scale(1.1)',
+                          },
+                          transition: 'all 0.2s ease-in-out',
+                        }}
                       >
                         <Delete />
                       </IconButton>
@@ -326,18 +491,25 @@ export default function TextImageUploader() {
                 </CardContent>
               </Card>
             ))}
-          </List>
+          </Box>
         )}
       </Box>
 
       {/* Fixed input area at bottom */}
       <Paper
-        elevation={3}
+        elevation={8}
         sx={{
-          p: 2,
-          borderTop: isDragging ? '3px solid' : 'none',
-          borderColor: 'warning.main',
-          backgroundColor: isDragging ? 'warning.light' : 'background.paper',
+          p: { xs: 2, sm: 3 },
+          borderTop: isDragging ? '4px solid' : 'none',
+          borderColor: 'primary.main',
+          backgroundColor: isDragging 
+            ? 'action.hover' 
+            : 'background.paper',
+          borderRadius: 0,
+          transition: 'all 0.3s ease-in-out',
+          boxShadow: isDragging 
+            ? '0 -4px 20px rgba(102, 126, 234, 0.3)' 
+            : '0 -2px 10px rgba(0,0,0,0.1)',
         }}
         onDragEnter={handleDragEnter}
         onDragLeave={handleDragLeave}
@@ -346,25 +518,55 @@ export default function TextImageUploader() {
         ref={dropZoneRef}
       >
         {isDragging && (
-          <Alert severity="warning" sx={{ mb: 2 }}>
-            Drop images here to attach them
+          <Alert 
+            severity="info" 
+            sx={{ 
+              mb: 2,
+              borderRadius: 2,
+              backgroundColor: 'primary.light',
+              color: 'primary.contrastText',
+              '& .MuiAlert-icon': {
+                color: 'primary.contrastText',
+              },
+            }}
+            icon={<ImageIcon />}
+          >
+            <Typography variant="body2" sx={{ fontWeight: 600 }}>
+              Drop images here to attach them
+            </Typography>
           </Alert>
         )}
 
         {/* Image previews */}
         {images.length > 0 && (
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 2 }}>
+          <Box 
+            sx={{ 
+              display: 'flex', 
+              flexWrap: 'wrap', 
+              gap: 1.5, 
+              mb: 2.5,
+              p: 1.5,
+              backgroundColor: 'action.hover',
+              borderRadius: 2,
+            }}
+          >
             {images.map((img, index) => (
               <Box
                 key={index}
                 sx={{
                   position: 'relative',
-                  width: 80,
-                  height: 80,
-                  borderRadius: 1,
+                  width: { xs: 70, sm: 90 },
+                  height: { xs: 70, sm: 90 },
+                  borderRadius: 2,
                   overflow: 'hidden',
-                  border: '1px solid',
+                  border: '2px solid',
                   borderColor: 'divider',
+                  transition: 'all 0.2s ease-in-out',
+                  '&:hover': {
+                    transform: 'scale(1.05)',
+                    borderColor: 'primary.main',
+                    boxShadow: 3,
+                  },
                 }}
               >
                 <CardMedia
@@ -377,36 +579,65 @@ export default function TextImageUploader() {
                   size="small"
                   sx={{
                     position: 'absolute',
-                    top: 0,
-                    right: 0,
-                    backgroundColor: 'rgba(0,0,0,0.5)',
+                    top: 4,
+                    right: 4,
+                    backgroundColor: 'rgba(0,0,0,0.6)',
                     color: 'white',
-                    '&:hover': { backgroundColor: 'rgba(0,0,0,0.7)' },
+                    width: 28,
+                    height: 28,
+                    '&:hover': { 
+                      backgroundColor: 'error.main',
+                      transform: 'scale(1.1)',
+                    },
+                    transition: 'all 0.2s ease-in-out',
                   }}
                   onClick={() => handleRemoveImage(index)}
                 >
-                  <Close fontSize="small" />
+                  <Close sx={{ fontSize: 16 }} />
                 </IconButton>
               </Box>
             ))}
           </Box>
         )}
 
-        <Box sx={{ display: 'flex', gap: 1, alignItems: 'flex-end' }}>
+        <Box sx={{ display: 'flex', gap: 1.5, alignItems: 'flex-end' }}>
           <TextField
             fullWidth
             multiline
             rows={3}
-            placeholder="Enter your text here..."
+            placeholder="Type your message here..."
             value={text}
             onChange={(e) => setText(e.target.value)}
             variant="outlined"
+            sx={{
+              '& .MuiOutlinedInput-root': {
+                borderRadius: 2,
+                backgroundColor: 'background.default',
+                '&:hover fieldset': {
+                  borderColor: 'primary.main',
+                },
+                '&.Mui-focused fieldset': {
+                  borderWidth: 2,
+                },
+              },
+            }}
           />
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
             <IconButton
               color="primary"
               onClick={handleFilePicker}
               title="Attach images"
+              sx={{
+                backgroundColor: 'action.hover',
+                width: 48,
+                height: 48,
+                '&:hover': {
+                  backgroundColor: 'primary.light',
+                  color: 'primary.contrastText',
+                  transform: 'scale(1.1)',
+                },
+                transition: 'all 0.2s ease-in-out',
+              }}
             >
               <AttachFile />
             </IconButton>
@@ -416,7 +647,24 @@ export default function TextImageUploader() {
               startIcon={<Send />}
               onClick={handleSend}
               disabled={!canSend}
-              sx={{ minWidth: 100 }}
+              sx={{ 
+                minWidth: 120,
+                height: 48,
+                borderRadius: 2,
+                textTransform: 'none',
+                fontWeight: 600,
+                fontSize: '1rem',
+                boxShadow: 3,
+                '&:hover': {
+                  boxShadow: 6,
+                  transform: 'translateY(-2px)',
+                },
+                '&:disabled': {
+                  backgroundColor: 'action.disabledBackground',
+                  color: 'action.disabled',
+                },
+                transition: 'all 0.2s ease-in-out',
+              }}
             >
               Send
             </Button>
@@ -434,22 +682,74 @@ export default function TextImageUploader() {
       </Paper>
 
       {/* Export Dialog */}
-      <Dialog open={exportDialogOpen} onClose={() => setExportDialogOpen(false)} maxWidth="md" fullWidth>
-        <DialogTitle>Export JSON</DialogTitle>
-        <DialogContent>
+      <Dialog 
+        open={exportDialogOpen} 
+        onClose={() => setExportDialogOpen(false)} 
+        maxWidth="md" 
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: 3,
+          },
+        }}
+      >
+        <DialogTitle sx={{ 
+          pb: 1,
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          color: 'white',
+          fontWeight: 600,
+        }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Download />
+            Export JSON Data
+          </Box>
+        </DialogTitle>
+        <DialogContent sx={{ pt: 3 }}>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+            Review the JSON data below. You can edit it before downloading.
+          </Typography>
           <TextField
             fullWidth
             multiline
-            rows={10}
+            rows={12}
             value={exportData}
             onChange={(e) => setExportData(e.target.value)}
             variant="outlined"
-            sx={{ mt: 1 }}
+            sx={{
+              '& .MuiOutlinedInput-root': {
+                fontFamily: 'monospace',
+                fontSize: '0.875rem',
+                '& textarea': {
+                  fontFamily: 'monospace',
+                },
+              },
+            }}
           />
         </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setExportDialogOpen(false)}>Close</Button>
-          <Button onClick={handleDownloadJSON} variant="contained" startIcon={<Download />}>
+        <DialogActions sx={{ p: 2.5, pt: 1 }}>
+          <Button 
+            onClick={() => setExportDialogOpen(false)}
+            sx={{
+              textTransform: 'none',
+              borderRadius: 2,
+            }}
+          >
+            Cancel
+          </Button>
+          <Button 
+            onClick={handleDownloadJSON} 
+            variant="contained" 
+            startIcon={<Download />}
+            sx={{
+              textTransform: 'none',
+              borderRadius: 2,
+              fontWeight: 600,
+              boxShadow: 2,
+              '&:hover': {
+                boxShadow: 4,
+              },
+            }}
+          >
             Download JSON
           </Button>
         </DialogActions>
